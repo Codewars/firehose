@@ -14,6 +14,11 @@ module Firehose
       $stdout.sync = true
     end
 
+    desc "assets", "Compiles the Firehose JavaScript assets."
+    def assets(directory = Dir.getwd)
+      Firehose::Assets::Sprockets.manifest(directory).compile
+    end
+
     desc "version", "Display the current version."
     def version
       puts %[Firehose #{Firehose::VERSION} "#{Firehose::CODENAME}"]

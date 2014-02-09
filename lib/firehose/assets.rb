@@ -1,3 +1,5 @@
+require 'sprockets'
+
 module Firehose
   # Deal with bundling Sprocket assets into environments (like Rails or Sprockets)
   module Assets
@@ -13,6 +15,18 @@ module Firehose
         env
       end
 
+      # Return a new sprockets environment configured with Firehose.
+      def self.environment
+        configure ::Sprockets::Environment.new
+      end
+
+      # Quick and dirty way for folks to compile the Firehose assets to a path
+      # from the CLI and use. These are usualy non-ruby (or non-sprockets) folks
+      # who want to run the firehose process and use the JS in a web app.
+      def self.manifest(directory)
+        ::Sprockets::Manifest.new(environment, directory)
+      end
+
       # Try to automatically configure Sprockets if its detected in the project.
       def self.auto_detect
         if defined? ::Sprockets and ::Sprockets.respond_to? :append_path
@@ -20,7 +34,7 @@ module Firehose
         end
       end
 
-      def self.manifest
+      def self.manifest_paths
         paths = []
         paths << File.basename(Firehose::Assets.path('/javascripts/firehose/firehose.js.coffee'), '.coffee')
         paths
